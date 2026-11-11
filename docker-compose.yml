@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      # Esto inyecta tu script SQL para que la tabla se cree automáticamente
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  procesador:
+    build: ./app
+    ports:
+      - "8000:8000"
+    environment:
+      # Apuntamos el host al nombre del servicio de la base de datos
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+    depends_on:
+      - db

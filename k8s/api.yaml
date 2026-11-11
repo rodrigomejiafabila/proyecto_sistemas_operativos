@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: procesador
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: procesador
+  template:
+    metadata:
+      labels:
+        app: procesador
+    spec:
+      containers:
+      - name: api
+        image: app-procesador:latest
+        imagePullPolicy: Never
+        envFrom:
+        - secretRef:
+            name: db-credenciales
+        env:
+        - name: DB_HOST
+          value: "db"
+        ports:
+        - containerPort: 8000
